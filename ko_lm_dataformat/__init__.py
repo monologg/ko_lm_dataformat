@@ -264,7 +264,7 @@ class Archive:
         self.compressor = self.cctx.stream_writer(self.fh)
 
     def add_data(self, data, meta={}):
-        self.compressor.write(json.dumps({"text": data, "meta": meta}).encode("UTF-8") + b"\n")
+        self.compressor.write(json.dumps({"text": data, "meta": meta}, ensure_ascii=False).encode("UTF-8") + b"\n")
 
     def commit(self, archive_name="default"):
         fname = (
@@ -349,7 +349,7 @@ class JSONArchive:
     def commit(self):
         cctx = zstandard.ZstdCompressor(level=3)
 
-        cdata = cctx.compress(json.dumps(self.data).encode("UTF-8"))
+        cdata = cctx.compress(json.dumps(self.data, ensure_ascii=False).encode("UTF-8"))
         with open(
             self.out_dir + "/data_" + str(self.i) + "_" + str(int(time.time())) + ".json.zst",
             "wb",
