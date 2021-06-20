@@ -17,15 +17,13 @@ def _is_control(char):
 def clean_sentence(sentence, remove_control=True):
     """
     - NFC Normalization
+    - Invalid character removal (Some control character)
     - Whitespace cleanup
       - strip()
       - double whitespace, \n, \r, \t -> simple whitespace (" ")
       - Unify all Zs to simple whitespace (" ")
-    - Invalid character removal (Some control character)
     """
     sentence = unicodedata.normalize("NFC", sentence)
-
-    sentence = " ".join(sentence.strip().split())
 
     if remove_control:
         output = []
@@ -33,6 +31,6 @@ def clean_sentence(sentence, remove_control=True):
             if not _is_control(char):
                 output.append(char)
 
-        return "".join(output)
-    else:
-        return sentence
+        sentence = "".join(output)
+
+    return " ".join(sentence.strip().split())
