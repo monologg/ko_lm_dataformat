@@ -1,7 +1,6 @@
 import importlib
 import logging
 import sys
-
 from typing import List
 
 from .sentence_cleaner import clean_sentence
