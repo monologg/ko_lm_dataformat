@@ -1,14 +1,20 @@
 # ko_lm_dataformat
 
-- Utilities for storing data for Korean LM training
-- Most of the code are from [lm_dataformat](https://github.com/leogao2/lm_dataformat)
+- Utilities for storing data for Korean PLM.
+- Code is based on [lm_dataformat](https://github.com/leogao2/lm_dataformat).
+
+## Additional Features for Korean Text
+
+- Add sentence splitter
 
 ## Basic Usage
 
 To write:
 
 ```python
-ar = Archive('output_dir')
+import ko_lm_dataformat as kldf
+
+ar = kldf.Archive('output_dir')
 
 for x in something():
   # do other stuff
@@ -25,8 +31,10 @@ ar.commit()
 To read:
 
 ```python
-rdr = Reader('input_dir_or_file')
+import ko_lm_dataformat as kldf
 
-for doc in rdr.stream_data():
+rdr = kldf.Reader('input_dir_or_file')
+
+for doc in rdr.stream_data(get_meta=False):
   # do something with the document
 ```

@@ -3,7 +3,7 @@ import sys
 from setuptools import setup, find_packages
 
 if sys.version_info < (3, 6):
-    sys.exit("Sorry, Python >= 3.6 is required for kodoc-tokenizer")
+    sys.exit("Sorry, Python >= 3.6 is required for ko_lm_dataformat")
 
 with open("requirements.txt") as f:
     require_packages = [line.strip() for line in f]
