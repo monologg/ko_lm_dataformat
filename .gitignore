@@ -132,3 +132,7 @@ dmypy.json
 .vscode/
 .idea/
 .DS_Store
+
+test.ipynb
+test_dir/
+data/
