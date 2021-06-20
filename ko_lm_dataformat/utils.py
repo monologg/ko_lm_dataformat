@@ -86,13 +86,15 @@ def tarfile_reader(file, streaming=False):
         offset += padded_size
 
 
-def handle_jsonl(jsonl_reader, get_meta, autojoin_paragraphs, para_joiner, key="text"):
+def handle_jsonl(
+    jsonl_reader, get_meta: bool = False, autojoin_sentences: bool = False, sent_joiner: str = " ", key: str = "text"
+):
     for ob in jsonl_reader:
         text = ob[key]
 
-        # if data is List[str], concatenate multiple document.
-        if autojoin_paragraphs and isinstance(text, list):
-            text = para_joiner.join(text)
+        # if data is List[str], concatenate multiple sentence.
+        if autojoin_sentences and isinstance(text, list):
+            text = sent_joiner.join(text)
 
         if get_meta:
             yield text, (ob["meta"] if "meta" in ob else {})

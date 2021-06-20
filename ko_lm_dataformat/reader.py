@@ -20,13 +20,15 @@ class Reader:
         """
         self.in_path = in_path
 
-    def stream_data(self, get_meta=False, threaded=False):
+    def stream_data(self, get_meta=False, autojoin_sentences=False, sent_joiner=" ", threaded=False):
         if not threaded:
-            yield from self._stream_data(get_meta)
+            yield from self._stream_data(
+                get_meta=get_meta, autojoin_sentences=autojoin_sentences, sent_joiner=sent_joiner
+            )
             return
 
         q = mp.Queue(1000)
-        p = mp.Process(target=self._stream_data_threaded, args=(q, get_meta))
+        p = mp.Process(target=self._stream_data_threaded, args=(q, get_meta, autojoin_sentences, sent_joiner))
         p.start()
         while p.is_alive():
             res = q.get()
@@ -39,7 +41,7 @@ class Reader:
             q.put(data)
         q.put(None)
 
-    def _stream_data(self, get_meta=False, jsonl_key="text"):
+    def _stream_data(self, get_meta=False, autojoin_sentences=False, sent_joiner=" ", jsonl_key="text"):
         """
         - Support format: jsonl.zst, json, dat, txt, zip, tar.gz
 
@@ -57,12 +59,16 @@ class Reader:
         for f in listdir_or_file(self.in_path):
             self.f_name = f
             if f.endswith(".jsonl.zst"):
-                yield from self.read_jsonl(f, get_meta, key=jsonl_key)
+                yield from self.read_jsonl(
+                    f, get_meta=get_meta, autojoin_sentences=autojoin_sentences, sent_joiner=sent_joiner, key=jsonl_key
+                )
             elif f.endswith(".dat.zst"):
                 assert not get_meta
                 yield from self.read_dat(f)
             elif f.endswith(".jsonl.zst.tar"):
-                yield from self.read_jsonl_tar(f, get_meta, key=jsonl_key)
+                yield from self.read_jsonl_tar(
+                    f, get_meta=get_meta, autojoin_sentences=autojoin_sentences, sent_joiner=sent_joiner, key=jsonl_key
+                )
             elif f.endswith(".json.zst"):
                 assert not get_meta
                 yield from self.read_json(f)
@@ -113,17 +119,18 @@ class Reader:
         self,
         file_path: str,
         get_meta: bool = False,
-        autojoin_paragraphs: bool = True,
-        para_joiner: str = "\n\n",
+        autojoin_sentences: bool = True,
+        sent_joiner: str = " ",
         key: str = "text",
     ):
         """
+        Read Jsonl data.
 
         Args:
             file_path (str): input file path
             get_meta (bool, optional): return metadata. Defaults to False.
-            autojoin_paragraphs (bool, optional): Join paragraph if data consists of multiple texts (=paragraph) . Defaults to True.
-            para_joiner (str, optional): Seperator for joining multiple paragraph . Defaults to "\n\n".
+            autojoin_sentences (bool, optional): Join sentences if data consists of multiple texts (=paragraph). Defaults to True.
+            sent_joiner (str, optional): Seperator for joining multiple sentences. Defaults to "\n\n".
             key (str, optional): Json key name for text. Defaults to "text".
 
         Yields:
@@ -133,14 +140,14 @@ class Reader:
             cctx = zstandard.ZstdDecompressor()
             reader = io.BufferedReader(cctx.stream_reader(fh))
             rdr = jsonlines.Reader(reader)
-            yield from handle_jsonl(rdr, get_meta, autojoin_paragraphs, para_joiner, key)
+            yield from handle_jsonl(rdr, get_meta, autojoin_sentences, sent_joiner, key)
 
     def read_jsonl_tar(
         self,
         file_path,
         get_meta=False,
-        autojoin_paragraphs=True,
-        para_joiner="\n\n",
+        autojoin_sentences: bool = True,
+        sent_joiner: str = " ",
         key="text",
     ):
         with open(file_path, "rb") as fh:
@@ -148,5 +155,5 @@ class Reader:
                 cctx = zstandard.ZstdDecompressor()
                 reader = io.BufferedReader(cctx.stream_reader(f))
                 rdr = jsonlines.Reader(reader)
-                yield from handle_jsonl(rdr, get_meta, autojoin_paragraphs, para_joiner, key)
+                yield from handle_jsonl(rdr, get_meta, autojoin_sentences, sent_joiner, key)
                 f.close()

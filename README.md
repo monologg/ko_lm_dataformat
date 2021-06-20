@@ -3,9 +3,18 @@
 - Utilities for storing data for Korean PLM.
 - Code is based on [lm_dataformat](https://github.com/leogao2/lm_dataformat).
 
-## Additional Features for Korean Text
+## What have been changed
 
-- Add sentence splitter
+### 기능 추가
+
+- Sentence splitter
+  - `kss v1.3.1`
+
+### 로직 변경
+
+- 기존과 달리 `json`의 `"text"` 는 무조건 하나의 document만 받음.
+  - `str` 이 아닌 `List[str]` 로 들어오게 되면 기존에는 각 str이 document였으나, 여기서는 sentence로 취급.
+  - 기존에는 여러 document를 `\n\n`으로 join 하였지만, `ko_lm_dataformat` 에서는 해당 로직을 없앰.
 
 ## Basic Usage
 
