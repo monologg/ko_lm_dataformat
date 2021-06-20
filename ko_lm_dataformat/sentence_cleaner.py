@@ -1,0 +1,38 @@
+import unicodedata
+
+
+def _is_control(char):
+    """Checks whether `char` is a control character."""
+    # (Code from Huggingface Transformers)
+    # These are technically control characters but we count them as whitespace
+    # characters.
+    if char == "\t" or char == "\n" or char == "\r":
+        return False
+    cat = unicodedata.category(char)
+    if cat.startswith("C"):
+        return True
+    return False
+
+
+def clean_sentence(sentence, remove_control=True):
+    """
+    - NFC Normalization
+    - Whitespace cleanup
+      - strip()
+      - double whitespace, \n, \r, \t -> simple whitespace (" ")
+      - Unify all Zs to simple whitespace (" ")
+    - Invalid character removal (Some control character)
+    """
+    sentence = unicodedata.normalize("NFC", sentence)
+
+    sentence = " ".join(sentence.strip().split())
+
+    if remove_control:
+        output = []
+        for char in sentence:
+            if not _is_control(char):
+                output.append(char)
+
+        return "".join(output)
+    else:
+        return sentence
