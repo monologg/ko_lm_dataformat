@@ -70,7 +70,7 @@ def test_jsonl():
     shutil.rmtree("test_dir")
 
 
-def test_jsonl_paras():
+def test_jsonl_paragraphs():
     archive = klmd.Archive("test_dir")
     blns = open("test/blns.txt").read()
     archive.add_data(blns)
