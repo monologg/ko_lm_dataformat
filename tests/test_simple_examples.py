@@ -1,10 +1,9 @@
 import hashlib
-import os
 import shutil
 
 import ko_lm_dataformat as klmd
 
-from .testing_utils import TMP_DIR_NAME, get_tests_dir, remove_tmp_dir
+from .testing_utils import get_tests_dir, remove_tmp_dir, TMP_DIR_NAME
 
 
 def sha256str(s):

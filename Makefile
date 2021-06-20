@@ -1,6 +1,6 @@
 .PHONY: style quality test
 
-check_dirs := ko_lm_dataformat/ test/
+check_dirs := ko_lm_dataformat/ tests/
 test_dirs := ko_lm_dataformat/
 
 style:

@@ -20,7 +20,7 @@ setup(
     long_description=open("./README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/monologg/ko_lm_dataformat",
-    packages=find_packages(exclude=["test"]),
+    packages=find_packages(exclude=["tests"]),
     python_requires=">=3.6",
     zip_safe=False,
     include_package_data=True,
