@@ -32,7 +32,11 @@ class KssSentenceSplitter(SentenceSplitterBase):
             self.splitter = importlib.import_module("kss")
             assert importlib_metadata.version("kss") == "1.3.1"
         except ImportError:
-            logger.warning("You need to install kss to use KssSentenceSplitter")
+            logger.warning(
+                "You need to install kss to use KssSentenceSplitter \n"
+                "pip install cython\n"
+                "pip install kss==1.3.1\n"
+            )
 
     def split(self, document: str) -> List[str]:
         if not self.clean_sentence:
