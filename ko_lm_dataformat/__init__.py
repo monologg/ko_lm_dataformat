@@ -2,8 +2,8 @@ import os
 
 from .archive import Archive, DatArchive, JSONArchive
 from .reader import Reader
-from .utils import tarfile_reader
 from .sentence_splitter import KssSentenceSplitter
+from .utils import tarfile_reader
 
 version_txt = os.path.join(os.path.dirname(__file__), "version.txt")
 with open(version_txt) as f:
