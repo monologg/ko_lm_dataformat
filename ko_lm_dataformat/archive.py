@@ -5,6 +5,7 @@ from typing import List, Optional, Union
 import ujson as json
 import zstandard
 
+from .sentence_cleaner import clean_sentence
 from .sentence_splitter import SentenceSplitterBase
 
 
@@ -31,13 +32,15 @@ class Archive:
         os.makedirs(out_dir, exist_ok=True)
         self.commit_cnt = 0  # count number of commit
 
-        self.fh = open(self.out_dir + "/current_chunk_incomplete", "wb")
+        self.fh = open(os.path.join(self.out_dir, "current_chunk_incomplete"), "wb")
         self.cctx = zstandard.ZstdCompressor(level=3, threads=threads)
         self.compressor = self.cctx.stream_writer(self.fh)
 
         self.sentence_splitter = sentence_splitter
 
-    def add_data(self, data: Union[str, List[str]], meta: dict = {}, split_sent: bool = False):
+    def add_data(
+        self, data: Union[str, List[str]], meta: dict = {}, split_sent: bool = False, clean_sent: bool = False
+    ):
         """
         Args:
             data (Union[str, List[str]]):
@@ -45,11 +48,15 @@ class Archive:
                 - List of text (multiple document)
             meta (Dict, optional): metadata . Defaults to {}.
             split_sent (bool): Whether split text into sentences
+            clean_sent
         """
         if split_sent:
             assert self.sentence_splitter
             assert type(data) == str  # Shouldn't be List[str]
-            data = self.sentence_splitter.split(data)
+            data = self.sentence_splitter.split(data, clean_sent=clean_sent)
+
+        if clean_sent and type(data) == str:
+            data = clean_sentence(data)
 
         self.compressor.write(json.dumps({"text": data, "meta": meta}, ensure_ascii=False).encode("UTF-8") + b"\n")
 
@@ -68,10 +75,10 @@ class Archive:
 
         self.fh.flush()
         self.fh.close()
-        os.rename(self.out_dir + "/current_chunk_incomplete", fname)
+        os.rename(os.path.join(self.out_dir, "current_chunk_incomplete"), fname)
 
         # Make new file for temporary writer
-        self.fh = open(self.out_dir + "/current_chunk_incomplete", "wb")
+        self.fh = open(os.path.join(self.out_dir, "current_chunk_incomplete"), "wb")
         self.compressor = self.cctx.stream_writer(self.fh)
 
         self.commit_cnt += 1
@@ -97,11 +104,11 @@ class DatArchive:
 
         self.sentence_splitter = sentence_splitter
 
-    def add_data(self, data: Union[str, List[str]], split_sent: bool = False):
+    def add_data(self, data: Union[str, List[str]], split_sent: bool = False, clean_sent: bool = False):
         if split_sent:
             assert self.sentence_splitter
             assert type(data) == str  # Shouldn't be List[str]
-            data = self.sentence_splitter.split(data)
+            data = self.sentence_splitter.split(data, clean_sent=clean_sent)
 
         self.data.append(data)
 
@@ -143,11 +150,11 @@ class JSONArchive:
 
         self.sentence_splitter = sentence_splitter
 
-    def add_data(self, data: Union[str, List[str]], split_sent: bool = False):
+    def add_data(self, data: Union[str, List[str]], split_sent: bool = False, clean_sent: bool = False):
         if split_sent:
             assert self.sentence_splitter
             assert type(data) == str  # Shouldn't be List[str]
-            data = self.sentence_splitter.split(data)
+            data = self.sentence_splitter.split(data, clean_sent=clean_sent)
 
         self.data.append(data)
 

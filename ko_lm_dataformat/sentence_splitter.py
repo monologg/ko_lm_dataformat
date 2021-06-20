@@ -11,17 +11,16 @@ logger = logging.getLogger(__name__)
 class SentenceSplitterBase:
     """Base Class for sentence splitter"""
 
-    def __init__(self, clean_sentence=False):
+    def __init__(self):
         self.splitter = None
-        self.clean_sentence = clean_sentence
 
     def split(self, document: str) -> List[str]:
         raise NotImplementedError
 
 
 class KssSentenceSplitter(SentenceSplitterBase):
-    def __init__(self, clean_sentence=False):
-        super().__init__(clean_sentence=clean_sentence)
+    def __init__(self):
+        super().__init__()
         try:
             self.splitter = importlib.import_module("kss")
             assert importlib_metadata.version("kss") == "1.3.1"
@@ -32,8 +31,8 @@ class KssSentenceSplitter(SentenceSplitterBase):
                 "pip install kss==1.3.1\n"
             )
 
-    def split(self, document: str) -> List[str]:
-        if not self.clean_sentence:
+    def split(self, document: str, clean_sent: bool = False) -> List[str]:
+        if not clean_sent:
             return self.splitter.split_sentences(document)
         else:
             cleaned_output = []
