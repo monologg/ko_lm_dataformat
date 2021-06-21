@@ -132,9 +132,6 @@ class Reader:
             autojoin_sentences (bool, optional): Join sentences if data consists of multiple texts (=paragraph). Defaults to True.
             sent_joiner (str, optional): Seperator for joining multiple sentences. Defaults to "\n\n".
             key (str, optional): Json key name for text. Defaults to "text".
-
-        Yields:
-            [type]: [description]
         """
         with open(file_path, "rb") as fh:
             cctx = zstandard.ZstdDecompressor()
