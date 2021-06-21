@@ -3,8 +3,6 @@ import os
 from .archive import Archive, DatArchive, JSONArchive
 from .reader import Reader
 from .sentence_splitter import KssSentenceSplitter
-from .utils import tarfile_reader
+from .utils import get_version, tarfile_reader
 
-version_txt = os.path.join(os.path.dirname(__file__), "version.txt")
-with open(version_txt) as f:
-    __version__ = f.read().strip()
+__version__ = get_version()

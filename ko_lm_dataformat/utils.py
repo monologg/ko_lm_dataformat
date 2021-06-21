@@ -100,3 +100,9 @@ def handle_jsonl(
             yield text, (ob["meta"] if "meta" in ob else {})
         else:
             yield text
+
+
+def get_version():
+    version_txt = os.path.join(os.path.dirname(__file__), "version.txt")
+    with open(version_txt) as f:
+        return f.read().strip()
