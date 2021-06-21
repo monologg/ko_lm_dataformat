@@ -1,3 +1,4 @@
+import datetime
 import mmap
 import os
 import sys
@@ -106,3 +107,9 @@ def get_version():
     version_txt = os.path.join(os.path.dirname(__file__), "version.txt")
     with open(version_txt) as f:
         return f.read().strip()
+
+
+def get_datetime_timestamp():
+    """ Get current datetime timestamp, based on Korea Timezone """
+    KST = datetime.timezone(datetime.timedelta(hours=9))
+    return datetime.datetime.now(tz=KST).strftime("%Y%m%d%H%M%S")[2:]

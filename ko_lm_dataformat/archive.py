@@ -7,7 +7,7 @@ import zstandard
 
 from .sentence_cleaner import clean_sentence
 from .sentence_splitter import SentenceSplitterBase
-from .utils import get_version
+from .utils import get_datetime_timestamp, get_version
 
 
 class Archive:
@@ -66,9 +66,11 @@ class Archive:
             self.out_dir
             + "/data_"
             + str(self.commit_cnt)
-            + "_time"
-            + str(int(time.time()))
-            + f"_v{get_version()}_"
+            + "_"
+            + f"{get_datetime_timestamp()}"
+            + "_"
+            + f"v{get_version()}"
+            + "_"
             + archive_name
             + ".jsonl.zst"
         )
@@ -125,7 +127,14 @@ class DatArchive:
         cdata = cctx.compress(res)
 
         with open(
-            self.out_dir + "/data_" + str(self.commit_cnt) + "_" + f"_v{get_version()}_" + archive_name + ".dat.zst",
+            self.out_dir
+            + "/data_"
+            + str(self.commit_cnt)
+            + "_"
+            + f"v{get_version()}"
+            + "_"
+            + archive_name
+            + ".dat.zst",
             "wb",
         ) as fh:
             fh.write(cdata)
@@ -172,7 +181,9 @@ class JSONArchive:
             + str(self.commit_cnt)
             + "_"
             + str(int(time.time()))
-            + f"_v{get_version()}_"
+            + "_"
+            + f"v{get_version()}"
+            + "_"
             + ".json.zst",
             "wb",
         ) as fh:
