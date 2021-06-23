@@ -27,10 +27,10 @@ def test_kor_str_is_same():
 
 
 # TODO how to install kss in github workflows
-# def test_archive_kss_sent_split():
-#     remove_tmp_dir()
-#     archive = klmd.Archive(TMP_DIR_NAME, sentence_splitter=klmd.KssSentenceSplitter(clean_sentence=False))
-#     with open(get_tests_dir(append_path="assets/kowiki_sample.txt"), "r", encoding="utf-8") as f:
-#         for line in f:
-#             archive.add_data(line.strip(), split_sent=True)
-#     shutil.rmtree(TMP_DIR_NAME)
+def test_archive_kss_sent_split():
+    remove_tmp_dir()
+    archive = klmd.Archive(TMP_DIR_NAME, sentence_splitter=klmd.KssSentenceSplitter())
+    with open(get_tests_dir(append_path="assets/kowiki_sample.txt"), "r", encoding="utf-8") as f:
+        for line in f:
+            archive.add_data(line.strip(), split_sent=True, clean_sent=False)
+    shutil.rmtree(TMP_DIR_NAME)
