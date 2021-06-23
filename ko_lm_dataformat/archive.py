@@ -48,8 +48,8 @@ class Archive:
                 - Simple text
                 - List of text (multiple document)
             meta (Dict, optional): metadata . Defaults to {}.
-            split_sent (bool): Whether split text into sentences
-            clean_sent
+            split_sent (bool): Whether to split text into sentences
+            clean_sent (bool): Whether to clean text (NFC, remove control char etc.)
         """
         if split_sent:
             assert self.sentence_splitter
