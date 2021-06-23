@@ -1,5 +1,3 @@
-import os
-
 from .archive import Archive, DatArchive, JSONArchive
 from .reader import Reader
 from .sentence_splitter import KssSentenceSplitter
