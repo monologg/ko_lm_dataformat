@@ -75,6 +75,19 @@ def test_jsonl():
     shutil.rmtree(TMP_DIR_NAME)
 
 
+def test_naughty_string():
+    remove_tmp_dir()
+    archive = klmd.Archive(TMP_DIR_NAME)
+    naughty_text = "  Today a::: : \t\t \x00I \x00a  朝 三暮四 [MASK] m \na fool \n\nbecause I am a fool. \n [SEP][CLS]  "
+    archive.add_data(naughty_text)
+    archive.commit()
+
+    reader = klmd.Reader(TMP_DIR_NAME)
+
+    data = list(reader.stream_data())
+    assert data[0] == naughty_text
+
+
 def test_jsonl_sentences():
     remove_tmp_dir()
     archive = klmd.Archive(TMP_DIR_NAME)
