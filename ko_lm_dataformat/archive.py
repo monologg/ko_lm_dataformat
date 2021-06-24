@@ -51,7 +51,7 @@ class Archive:
         """
         if split_sent:
             assert self.sentence_splitter
-            assert type(data) == str  # Shouldn't be List[str]
+            assert type(data) != list  # Shouldn't be List[str]
             data = self.sentence_splitter.split(data, clean_sent=clean_sent)
 
         if clean_sent and type(data) == str:
