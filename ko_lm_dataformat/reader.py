@@ -36,8 +36,8 @@ class Reader:
                 break
             yield res
 
-    def _stream_data_threaded(self, q, get_meta=False):
-        for data in self._stream_data(get_meta):
+    def _stream_data_threaded(self, q, get_meta=False, autojoin_sentences=False, sent_joiner=" "):
+        for data in self._stream_data(get_meta, autojoin_sentences, sent_joiner):
             q.put(data)
         q.put(None)
 
