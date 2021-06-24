@@ -28,8 +28,9 @@ def clean_sentence(sentence, remove_control=True):
     if remove_control:
         output = []
         for char in sentence:
-            if not _is_control(char):
-                output.append(char)
+            if _is_control(char) or ord(char) == 0xFFFD:
+                continue
+            output.append(char)
 
         sentence = "".join(output)
 
