@@ -21,6 +21,11 @@ test:
 test-cov:
 	pytest --cov-branch --cov $(test_dirs)
 
+.PHONY: pypi
+pypi:
+	python3 setup.py sdist bdist_wheel
+	python3 -m twine upload dist/*
+
 .PHONY: build-remove
 build-remove:
 	rm -rf build/ dist/
