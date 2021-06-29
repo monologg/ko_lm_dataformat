@@ -1,49 +1,78 @@
 # ko_lm_dataformat
 
-- Utilities for storing data for Korean PLM.
-- Code is based on [lm_dataformat](https://github.com/leogao2/lm_dataformat).
+<div align="left">
 
-## What have been changed
+[![PyPI](https://img.shields.io/pypi/v/ko_lm_dataformat)](https://pypi.org/project/ko_lm_dataformat/)
 
-### 기능 추가
+<h3 align="left">
+    <p>A utility for storing and reading files for Korean LM training</p>
+</h3>
 
-- Sentence splitter
-  - `kss v1.3.1`
+</div>
 
-### 로직 변경
+## About
 
-- 기존과 달리 `json`의 `"text"` 는 무조건 하나의 document만 받음.
-  - `str` 이 아닌 `List[str]` 로 들어오게 되면 기존에는 각 str이 document였으나, 여기서는 sentence로 취급.
-  - 기존에는 여러 document를 `\n\n`으로 join 하였지만, `ko_lm_dataformat` 에서는 해당 로직을 없앰.
-
-## Basic Usage
-
-To write:
-
-```python
-import ko_lm_dataformat as kldf
-
-ar = kldf.Archive('output_dir')
-
-for x in something():
-  # do other stuff
-  ar.add_data(somedocument, meta={
-    'example': stuff,
-    'someothermetadata': [othermetadata, otherrandomstuff],
-    'otherotherstuff': True
-  })
-
-# remember to commit at the end!
-ar.commit()
+```bash
+pip3 install ko_lm_dataformat
 ```
 
-To read:
+- 한국어 언어모델 학습 데이터를 저장하기 위한 유틸리티
+- 코드는 EleutherAI에서 사용하는 [lm_dataformat](https://github.com/leogao2/lm_dataformat)를 참고하여 제작.
+
+  - 일부 버그 수정
+  - 한국어에 맞게 기능 추가 및 수정 (sentence splitter, text cleaner)
+
+- [`zstandard`](https://github.com/facebook/zstd), [`ultrajson`](https://github.com/ultrajson/ultrajson) 을 사용하여 데이터 로딩, 압축 속도 개선
+
+## Usage
+
+### 1. Write data
+
+- Load Archive
+  - [kss sentence splitter](https://github.com/likejazz/korean-sentence-splitter) 사용 가능
 
 ```python
 import ko_lm_dataformat as kldf
 
-rdr = kldf.Reader('input_dir_or_file')
+ar = kldf.Archive("output_dir")
+ar = kldf.Archive("output_dir", sentence_splitter=kldf.KssSentenceSplitter()) # Use sentence splitter
+```
 
-for doc in rdr.stream_data(get_meta=False):
-  # do something with the document
+- Adding data
+  - `meta` 데이터를 추가할 수 있음 (e.g. 제목, url 등등)
+  - 하나의 document가 들어온다고 가정 (`str` 이 아닌 `List[str]` 로 들어오게 되면 여러 개의 sentence가 들어오는 걸로 취급)
+  - `split_sent=True`이면 document를 여러 개의 문장으로 분리하여 `List[str]` 으로 저장함.
+  - `clean_sent=True`이면 NFC Normalize, control char 제거, whitespace clean 적용됨.
+
+```python
+for doc in doc_lst:
+  ar.add_data(
+    data=doc,
+    meta={
+      "source": "kowiki",
+      "meta_key_1": [othermetadata, otherrandomstuff],
+      "meta_key_2": True
+    },
+    split_sent=False,
+    clean_sent=False,
+  )
+```
+
+### 2. Read Data
+
+- `rdr.stream_data(get_meta=True)`로 할 시 `(doc, meta)` 의 튜플 형태로 반환.
+
+```python
+import ko_lm_dataformat as kldf
+
+rdr = kldf.Reader("output_dir")
+
+for data in rdr.stream_data(get_meta=False):
+  print(data)
+# "간단하게 설명하면, 언어를 통해 인간의 삶을 미적(美的)으로 형상화한 것이라고 볼...."
+
+
+for data in rdr.stream_data(get_meta=True):
+  print(data)
+# ("간단하게 설명하면, 언어를 통해 인간의 삶을 미적(美的)으로 형상화한 것이라고 볼....", {"source": "kowiki", ...})
 ```
