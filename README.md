@@ -1,7 +1,7 @@
 # ko_lm_dataformat
 
 [![PyPI](https://img.shields.io/pypi/v/ko_lm_dataformat)](https://pypi.org/project/ko_lm_dataformat/)
-[![License](https://img.shields.io/github/license/ko_lm_dataformat/ko_lm_dataformat)](https://github.com/monologg/ko_lm_dataformat/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/monologg/ko_lm_dataformat)](https://github.com/monologg/ko_lm_dataformat/blob/master/LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 - **한국어 언어모델용 학습 데이터를 저장, 로딩**하기 위한 유틸리티
