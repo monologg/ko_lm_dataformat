@@ -23,6 +23,8 @@ pip3 install ko_lm_dataformat
 
 ### 1. Write Data
 
+#### 1.1. Archive
+
 - [kss sentence splitter](https://github.com/likejazz/korean-sentence-splitter) 사용 가능
 
 ```python
@@ -32,24 +34,25 @@ ar = kldf.Archive("output_dir")
 ar = kldf.Archive("output_dir", sentence_splitter=kldf.KssSentenceSplitter()) # Use sentence splitter
 ```
 
-- Adding data
-  - `meta` 데이터를 추가할 수 있음 (e.g. 제목, url)
-  - 하나의 document가 들어온다고 가정 (`str` 이 아닌 `List[str]` 로 들어오게 되면 여러 개의 sentence가 들어오는 걸로 취급)
-  - `split_sent=True`이면 **document를 여러 개의 문장으로 분리**하여 `List[str]` 으로 저장
-  - `clean_sent=True`이면 **NFC Normalize**, **control char 제거**, **whitespace cleanup** 적용
+#### 1.2. Adding data
+
+- `meta` 데이터를 추가할 수 있음 (e.g. 제목, url)
+- 하나의 document가 들어온다고 가정 (`str` 이 아닌 `List[str]` 로 들어오게 되면 여러 개의 sentence가 들어오는 걸로 취급)
+- `split_sent=True`이면 **document를 여러 개의 문장으로 분리**하여 `List[str]` 으로 저장
+- `clean_sent=True`이면 **NFC Normalize**, **control char 제거**, **whitespace cleanup** 적용
 
 ```python
 for doc in doc_lst:
-  ar.add_data(
-    data=doc,
-    meta={
-      "source": "kowiki",
-      "meta_key_1": [othermetadata, otherrandomstuff],
-      "meta_key_2": True
-    },
-    split_sent=False,
-    clean_sent=False,
-  )
+    ar.add_data(
+        data=doc,
+        meta={
+          "source": "kowiki",
+          "meta_key_1": [othermetadata, otherrandomstuff],
+          "meta_key_2": True
+        },
+        split_sent=False,
+        clean_sent=False,
+    )
 ```
 
 ### 2. Read Data
