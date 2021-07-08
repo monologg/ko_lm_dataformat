@@ -25,13 +25,13 @@ pip3 install ko_lm_dataformat
 
 #### 1.1. Archive
 
-- [kss sentence splitter](https://github.com/likejazz/korean-sentence-splitter) 사용 가능
+- [kss v1 sentence splitter](https://github.com/likejazz/korean-sentence-splitter) 사용 가능
 
 ```python
 import ko_lm_dataformat as kldf
 
 ar = kldf.Archive("output_dir")
-ar = kldf.Archive("output_dir", sentence_splitter=kldf.KssSentenceSplitter()) # Use sentence splitter
+ar = kldf.Archive("output_dir", sentence_splitter=kldf.KssV1SentenceSplitter()) # Use sentence splitter
 ```
 
 #### 1.2. Adding data
