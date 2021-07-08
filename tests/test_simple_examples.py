@@ -1,7 +1,7 @@
 import hashlib
 import shutil
 
-import ko_lm_dataformat as klmd
+import ko_lm_dataformat as kldf
 
 from .testing_utils import TMP_DIR_NAME, get_tests_dir, remove_tmp_dir
 
@@ -14,7 +14,7 @@ def sha256str(s):
 
 def test_dat():
     remove_tmp_dir()
-    archive = klmd.DatArchive(TMP_DIR_NAME)
+    archive = kldf.DatArchive(TMP_DIR_NAME)
     blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
     archive.add_data(blns)
     archive.add_data("testing 123")
@@ -22,7 +22,7 @@ def test_dat():
     archive.add_data("testing 123456789")
     archive.commit()
 
-    reader = klmd.Reader(TMP_DIR_NAME)
+    reader = kldf.Reader(TMP_DIR_NAME)
 
     data = list(reader.stream_data())
 
@@ -35,7 +35,7 @@ def test_dat():
 
 def test_json():
     remove_tmp_dir()
-    archive = klmd.JSONArchive(TMP_DIR_NAME)
+    archive = kldf.JSONArchive(TMP_DIR_NAME)
     blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
     archive.add_data(blns)
     archive.add_data("testing 123")
@@ -43,7 +43,7 @@ def test_json():
     archive.add_data("testing 123456789")
     archive.commit()
 
-    reader = klmd.Reader(TMP_DIR_NAME)
+    reader = kldf.Reader(TMP_DIR_NAME)
 
     data = list(reader.stream_data())
 
@@ -56,7 +56,7 @@ def test_json():
 
 def test_jsonl():
     remove_tmp_dir()
-    archive = klmd.Archive(TMP_DIR_NAME)
+    archive = kldf.Archive(TMP_DIR_NAME)
     blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
     archive.add_data(blns)
     archive.add_data("testing 123", meta={"testing": 123})
@@ -64,7 +64,7 @@ def test_jsonl():
     archive.add_data("testing 123456789")
     archive.commit()
 
-    reader = klmd.Reader(TMP_DIR_NAME)
+    reader = kldf.Reader(TMP_DIR_NAME)
 
     data = list(reader.stream_data(get_meta=True))
 
@@ -77,12 +77,12 @@ def test_jsonl():
 
 def test_naughty_string():
     remove_tmp_dir()
-    archive = klmd.Archive(TMP_DIR_NAME)
+    archive = kldf.Archive(TMP_DIR_NAME)
     naughty_text = "  Today a::: : \t\t \x00I \x00a  朝 三暮四 [MASK] m \na fool \n\nbecause I am a fool. \n [SEP][CLS]  "
     archive.add_data(naughty_text, clean_sent=True)
     archive.commit()
 
-    reader = klmd.Reader(TMP_DIR_NAME)
+    reader = kldf.Reader(TMP_DIR_NAME)
 
     data = list(reader.stream_data())
     assert data[0] == "Today a::: : I a 朝 三暮四 [MASK] m a fool because I am a fool. [SEP][CLS]"
@@ -90,7 +90,7 @@ def test_naughty_string():
 
 def test_jsonl_sentences():
     remove_tmp_dir()
-    archive = klmd.Archive(TMP_DIR_NAME)
+    archive = kldf.Archive(TMP_DIR_NAME)
     blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
     archive.add_data(blns)
     archive.add_data(["testing 123", "testing 345"], meta={"testing": 123})
@@ -98,7 +98,7 @@ def test_jsonl_sentences():
     archive.add_data("testing 123456789")
     archive.commit()
 
-    reader = klmd.Reader(TMP_DIR_NAME)
+    reader = kldf.Reader(TMP_DIR_NAME)
 
     data = list(reader.stream_data(get_meta=True, autojoin_sentences=True, sent_joiner="\n"))
 
@@ -111,7 +111,7 @@ def test_jsonl_sentences():
 
 def test_jsonl_tar():
     blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
-    reader = klmd.Reader(get_tests_dir(append_path="assets/blns.jsonl.zst.tar"))
+    reader = kldf.Reader(get_tests_dir(append_path="assets/blns.jsonl.zst.tar"))
 
     data = list(reader.stream_data(get_meta=True, autojoin_sentences=True, sent_joiner="\n"))
 
@@ -127,7 +127,7 @@ def test_jsonl_tar():
 
 
 def test_txt_read():
-    reader = klmd.Reader(get_tests_dir(append_path="assets/blns.txt"))
+    reader = kldf.Reader(get_tests_dir(append_path="assets/blns.txt"))
     blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
 
     data = list(reader.stream_data(get_meta=False))
@@ -137,7 +137,7 @@ def test_txt_read():
 
 
 def test_zip_read():
-    reader = klmd.Reader(get_tests_dir(append_path="assets/blns.txt.zip"))
+    reader = kldf.Reader(get_tests_dir(append_path="assets/blns.txt.zip"))
     blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
 
     data = list(reader.stream_data(get_meta=False))
@@ -147,7 +147,7 @@ def test_zip_read():
 
 
 def test_tgz_read():
-    reader = klmd.Reader(get_tests_dir(append_path="assets/blns.txt.tar.gz"))
+    reader = kldf.Reader(get_tests_dir(append_path="assets/blns.txt.tar.gz"))
     blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
 
     data = list(reader.stream_data(get_meta=False))
@@ -157,7 +157,7 @@ def test_tgz_read():
 
 
 def test_tarfile_reader():
-    rdr = klmd.tarfile_reader(open(get_tests_dir(append_path="assets/testtarfile.tar"), "rb"), streaming=True)
+    rdr = kldf.tarfile_reader(open(get_tests_dir(append_path="assets/testtarfile.tar"), "rb"), streaming=True)
 
     hashes = map(lambda doc: sha256str(doc.read()), rdr)
 
