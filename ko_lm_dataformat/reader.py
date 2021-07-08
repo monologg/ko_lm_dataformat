@@ -91,7 +91,7 @@ class Reader:
                 print(f"Skipping {f} as streaming for that filetype is not implemented")
 
     def read_txt(self, file):
-        with open(file, "r") as fh:
+        with open(file, "r", encoding="utf-8") as fh:
             yield fh.read()
 
     def read_zip(self, file):
