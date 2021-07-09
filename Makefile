@@ -36,3 +36,7 @@ pycache-remove:
 
 .PHONY: clean-all
 clean-all: pycache-remove build-remove
+
+.PHONY: set-git
+set-git:
+	git config --local commit.template .gitmessage
