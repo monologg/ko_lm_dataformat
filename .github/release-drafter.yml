@@ -1,5 +1,5 @@
-name-template: 'v$RESOLVED_VERSION'
-tag-template: 'v$RESOLVED_VERSION'
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
 
 categories:
   - title: ":rocket: Features"
@@ -14,6 +14,38 @@ categories:
     labels: [documentation, doc]
   - title: ":arrow_up: Dependencies updates"
     labels: [dependencies, dep]
+
+autolabeler:
+  - label: "chore"
+    branch:
+      - '/(chore|refactor)\/.+/'
+    title:
+      - "/(chore|refactor)/i"
+  - label: "bug"
+    branch:
+      - '/(fix|hotfix)\/.+/'
+    title:
+      - "/(fix|hotfix)/i"
+  - label: "enhancement"
+    branch:
+      - '/(feat|feature)\/.+/'
+    title:
+      - "/(feat|feature)/i"
+  - label: "documentation"
+    branch:
+      - '/(doc|documentation)\/.+/'
+    title:
+      - "/(doc|documentation)/i"
+  - label: "ci"
+    branch:
+      - '/ci\/.+/'
+    title:
+      - "/ci/i"
+  - label: "testing"
+    branch:
+      - '/(test|tests)\/.+/'
+    title:
+      - "/(test|tests)/i"
 
 template: |
   ## What’s Changed
