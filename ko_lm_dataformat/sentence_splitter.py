@@ -18,7 +18,7 @@ class SentenceSplitterBase:
         raise NotImplementedError
 
 
-class KssSentenceSplitter(SentenceSplitterBase):
+class KssV1SentenceSplitter(SentenceSplitterBase):
     def __init__(self):
         super().__init__()
         try:
@@ -26,9 +26,9 @@ class KssSentenceSplitter(SentenceSplitterBase):
             assert importlib_metadata.version("kss") == "1.3.1"
         except ImportError:
             logger.warning(
-                "You need to install kss to use KssSentenceSplitter \n"
-                "pip install cython\n"
-                "pip install kss==1.3.1\n"
+                "You need to install kss to use KssV1SentenceSplitter!\n"
+                ">>> pip install cython\n"
+                ">>> pip install kss==1.3.1\n"
             )
 
     def split(self, document: str, clean_sent: bool = False) -> List[str]:

@@ -1,5 +1,6 @@
 import gzip
 import io
+import logging
 import multiprocessing as mp
 from zipfile import ZipFile
 
@@ -8,6 +9,8 @@ import ujson as json
 import zstandard
 
 from .utils import handle_jsonl, listdir_or_file, tarfile_reader
+
+logger = logging.getLogger(__name__)
 
 
 class Reader:
@@ -88,7 +91,7 @@ class Reader:
                 assert not get_meta
                 yield from self.read_gz(f)
             else:
-                print(f"Skipping {f} as streaming for that filetype is not implemented")
+                logger.info(f"Skipping {f} as streaming for that filetype is not implemented")
 
     def read_txt(self, file):
         with open(file, "r", encoding="utf-8") as fh:
