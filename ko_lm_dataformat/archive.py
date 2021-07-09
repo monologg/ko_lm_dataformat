@@ -84,6 +84,9 @@ class Archive:
 
         self.commit_cnt += 1
 
+    def set_sentence_splitter(self, sentence_splitter: SentenceSplitterBase):
+        self.sentence_splitter = sentence_splitter
+
 
 class DatArchive:
     def __init__(self, out_dir: str, sentence_splitter: Optional[SentenceSplitterBase] = None, level: int = 3):
