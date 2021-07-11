@@ -14,7 +14,7 @@ class SentenceSplitterBase:
     def __init__(self):
         self.splitter = None
 
-    def split(self, document: str) -> List[str]:
+    def split(self, document: str, clean_sent: bool) -> List[str]:
         raise NotImplementedError
 
 
@@ -32,10 +32,7 @@ class KssV1SentenceSplitter(SentenceSplitterBase):
             )
 
     def split(self, document: str, clean_sent: bool = False) -> List[str]:
-        if not clean_sent:
-            return self.splitter.split_sentences(document)
-        else:
-            cleaned_output = []
-            for sent in self.splitter.split_sentences(document):
-                cleaned_output.append(clean_sentence(sent))
-            return cleaned_output
+        sentences = self.splitter.split_sentences(document)
+        if clean_sent:
+            sentences = [clean_sentence(sent) for sent in sentences]
+        return sentences
