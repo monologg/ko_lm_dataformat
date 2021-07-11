@@ -4,10 +4,13 @@ from typing import List, Optional, Union
 
 import ujson as json
 import zstandard
+from glob import glob
 
 from .sentence_cleaner import clean_sentence
 from .sentence_splitter import SentenceSplitterBase
 from .utils import get_datetime_timestamp, get_version
+
+CURRENT_CHUNK_INCOMPLETE = "current_chunk_incomplete"
 
 
 class Archive:
@@ -22,8 +25,8 @@ class Archive:
             sentence_splitter (SentenceSplitterBase, optional): Sentence Splitter. Defaults to None.
             threads (int, optional):
                 Number of threads for compressing.
-                0 will disable multithread.
-                -1 will set the number of threads to the numbert of detected logical CPUs.
+                0 will disable multi-thread.
+                -1 will set the number of threads to the number of detected logical CPUs.
                 Defaults to -1.
             level (int, optional): Integer compression level. Valid values are all negative integers through 22.
         """
@@ -31,14 +34,26 @@ class Archive:
         os.makedirs(out_dir, exist_ok=True)
         self.commit_cnt = 0  # count number of commit
 
-        self.fh = open(os.path.join(self.out_dir, "current_chunk_incomplete"), "wb")
+        self.chunk_path = self.set_chunk_name()
+        self.fh = open(self.chunk_path, "wb")
         self.cctx = zstandard.ZstdCompressor(level=level, threads=threads)
         self.compressor = self.cctx.stream_writer(self.fh)
 
         self.sentence_splitter = sentence_splitter
 
+    def set_chunk_name(self):
+        # check whether the incomplete chunks exist
+        init_path = os.path.join(self.out_dir, CURRENT_CHUNK_INCOMPLETE + "*")
+        chunk_list = glob(init_path)
+        sorted(chunk_list)
+        chunk_num = 0
+        if chunk_list and chunk_list[-1]:
+            chunk_num = int(chunk_list[-1].split("_")[-1]) + 1
+
+        return os.path.join(self.out_dir, f"{CURRENT_CHUNK_INCOMPLETE}_{chunk_num}")
+
     def add_data(
-        self, data: Union[str, List[str]], meta: dict = {}, split_sent: bool = False, clean_sent: bool = False
+        self, data: Union[str, List[str]], meta=None, split_sent: bool = False, clean_sent: bool = False
     ):
         """
         Args:
@@ -49,6 +64,8 @@ class Archive:
             split_sent (bool): Whether to split text into sentences
             clean_sent (bool): Whether to clean text (NFC, remove control char etc.)
         """
+        if meta is None:
+            meta = {}
         if split_sent:
             assert self.sentence_splitter
             assert type(data) != list  # Shouldn't be List[str]
@@ -76,10 +93,11 @@ class Archive:
 
         self.fh.flush()
         self.fh.close()
-        os.rename(os.path.join(self.out_dir, "current_chunk_incomplete"), fname)
+        os.rename(self.chunk_path, fname)
 
         # Make new file for temporary writer
-        self.fh = open(os.path.join(self.out_dir, "current_chunk_incomplete"), "wb")
+        self.chunk_path = self.set_chunk_name()
+        self.fh = open(self.chunk_path, "wb")
         self.compressor = self.cctx.stream_writer(self.fh)
 
         self.commit_cnt += 1
