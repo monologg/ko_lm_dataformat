@@ -43,9 +43,10 @@ class Archive:
 
     def set_chunk_name(self):
         # check whether the incomplete chunks exist
-        init_path = os.path.join(self.out_dir, CURRENT_CHUNK_INCOMPLETE + "*")
-        chunk_list = glob(init_path)
-        sorted(chunk_list)
+        chunk_list = glob(os.path.join(self.out_dir, CURRENT_CHUNK_INCOMPLETE + "*"))
+        # sort the names of chunks by numerical order
+        chunk_list = sorted(chunk_list, key=lambda name: int(name.split("_")[-1]))
+        # give a unique name of the current chunk
         chunk_num = 0
         if chunk_list and chunk_list[-1]:
             chunk_num = int(chunk_list[-1].split("_")[-1]) + 1
