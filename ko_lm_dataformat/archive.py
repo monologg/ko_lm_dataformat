@@ -54,14 +54,14 @@ class Archive:
         return os.path.join(self.out_dir, f"{CURRENT_CHUNK_INCOMPLETE}_{chunk_num}")
 
     def add_data(
-        self, data: Union[str, List[str]], meta: Dict = None, split_sent: bool = False, clean_sent: bool = False
+        self, data: Union[str, List[str]], meta: Optional[Dict] = None, split_sent: bool = False, clean_sent: bool = False
     ):
         """
         Args:
             data (Union[str, List[str]]):
                 - Simple text
-                - List of text (multiple document)
-            meta (Dict, optional): metadata . Defaults to {}.
+                - List of text (multiple sentences)
+            meta (Dict, optional): metadata. Defaults to None.
             split_sent (bool): Whether to split text into sentences
             clean_sent (bool): Whether to clean text (NFC, remove control char etc.)
         """
