@@ -1,7 +1,7 @@
 import os
 import time
 from glob import glob
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import ujson as json
 import zstandard
@@ -53,7 +53,9 @@ class Archive:
 
         return os.path.join(self.out_dir, f"{CURRENT_CHUNK_INCOMPLETE}_{chunk_num}")
 
-    def add_data(self, data: Union[str, List[str]], meta=None, split_sent: bool = False, clean_sent: bool = False):
+    def add_data(
+        self, data: Union[str, List[str]], meta: Dict = None, split_sent: bool = False, clean_sent: bool = False
+    ):
         """
         Args:
             data (Union[str, List[str]]):
