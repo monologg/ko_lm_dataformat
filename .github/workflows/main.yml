@@ -1,6 +1,6 @@
 name: ko_lm_dataformat
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   check-lint:
