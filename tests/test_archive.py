@@ -26,7 +26,6 @@ def test_kor_str_is_same():
     assert data[0] == text
 
 
-# TODO how to install kss in github workflows
 def test_archive_kss_sent_split():
     remove_tmp_dir()
     archive = kldf.Archive(TMP_DIR_NAME, sentence_splitter=kldf.KssV1SentenceSplitter())
