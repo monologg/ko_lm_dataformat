@@ -53,6 +53,9 @@ for doc in doc_lst:
         split_sent=False,
         clean_sent=False,
     )
+
+# remember to commit at the end!
+ar.commit()
 ```
 
 ### 2. Read Data
