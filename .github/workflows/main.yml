@@ -7,15 +7,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.7
+          python-version: 3.11
 
       - name: Cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           # This path is specific to Ubuntu
           path: ~/.cache/pip
@@ -38,15 +38,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Set up Python 3.7
-        uses: actions/setup-python@v2
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.7
+          python-version: 3.11
 
       - name: Cache pip
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           # This path is specific to Ubuntu
           path: ~/.cache/pip
