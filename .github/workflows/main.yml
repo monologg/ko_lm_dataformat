@@ -9,10 +9,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "3.8"
+          python-version: "3.11"
 
       - name: Cache pip
         uses: actions/cache@v3
@@ -40,10 +40,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python 3.8
+      - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: "3.8"
+          python-version: "3.11"
 
       - name: Cache pip
         uses: actions/cache@v3
@@ -59,15 +59,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install cython==3.0.8
           pip install -r requirements.txt -r requirements-dev.txt
           pip install .
-
-      - name: Verify Cython installation
-        run: pip list | grep Cython
-
-      - name: Verify Cython installation
-        run: python -c "import Cython; print(Cython.__version__)"
 
       - name: Run Test Code
         run: |
