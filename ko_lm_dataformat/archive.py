@@ -73,10 +73,10 @@ class Archive:
             meta = {}
         if split_sent:
             assert self.sentence_splitter
-            assert type(data) != list  # Shouldn't be List[str]
+            assert type(data) is not list  # Shouldn't be List[str]
             data = self.sentence_splitter.split(data, clean_sent=clean_sent)
 
-        if clean_sent and type(data) == str:
+        if clean_sent and type(data) is str:
             data = clean_sentence(data)
 
         self.compressor.write(json.dumps({"text": data, "meta": meta}, ensure_ascii=False).encode("UTF-8") + b"\n")
@@ -136,7 +136,7 @@ class DatArchive:
     def add_data(self, data: Union[str, List[str]], split_sent: bool = False, clean_sent: bool = False):
         if split_sent:
             assert self.sentence_splitter
-            assert type(data) == str  # Shouldn't be List[str]
+            assert type(data) is str  # Shouldn't be List[str]
             data = self.sentence_splitter.split(data, clean_sent=clean_sent)
 
         self.data.append(data)
@@ -194,7 +194,7 @@ class JSONArchive:
     def add_data(self, data: Union[str, List[str]], split_sent: bool = False, clean_sent: bool = False):
         if split_sent:
             assert self.sentence_splitter
-            assert type(data) == str  # Shouldn't be List[str]
+            assert type(data) is str  # Shouldn't be List[str]
             data = self.sentence_splitter.split(data, clean_sent=clean_sent)
 
         self.data.append(data)
