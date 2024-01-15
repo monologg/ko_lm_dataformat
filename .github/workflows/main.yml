@@ -60,7 +60,7 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip
           pip3 install -r requirements.txt -r requirements-dev.txt
-          pip3 install -U cython
+          pip3 install -U Cython
           pip3 install kss==1.3.1
           pip3 install .
 
