@@ -1,3 +1,4 @@
+import json
 import shutil
 
 import pytest
@@ -14,6 +15,28 @@ def test_kowiki_archive():
         for line in f:
             archive.add_data(line.strip())
     shutil.rmtree(TMP_DIR_NAME)
+
+
+def test_archive_json_data():
+    remove_tmp_dir()
+    archive = kldf.Archive(TMP_DIR_NAME)
+    with open(get_tests_dir(append_path="assets/sample.json"), "r", encoding="utf-8") as f:
+        data = json.load(f)
+    archive.add_data(data)
+
+    shutil.rmtree(TMP_DIR_NAME)
+
+
+def test_archive_json_data_is_same():
+    remove_tmp_dir()
+    archive = kldf.Archive(TMP_DIR_NAME)
+    with open(get_tests_dir(append_path="assets/sample.json"), "r", encoding="utf-8") as f:
+        orig_data = json.load(f)
+    archive.add_data(orig_data)
+    archive.commit()
+    reader = kldf.Reader(TMP_DIR_NAME)
+    kldf_data = list(reader.stream_data())
+    assert kldf_data[0] == orig_data
 
 
 def test_kor_str_is_same():

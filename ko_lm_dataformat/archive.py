@@ -55,16 +55,17 @@ class Archive:
 
     def add_data(
         self,
-        data: Union[str, List[str]],
+        data: Union[str, List, dict],
         meta: Optional[Dict] = None,
         split_sent: bool = False,
         clean_sent: bool = False,
     ):
         """
         Args:
-            data (Union[str, List[str]]):
+            data (Union[str, List, dict]):
                 - Simple text
-                - List of text (multiple sentences)
+                - List of text (multiple sentences), List of dict
+                - Json style data
             meta (Dict, optional): metadata. Defaults to None.
             split_sent (bool): Whether to split text into sentences
             clean_sent (bool): Whether to clean text (NFC, remove control char etc.)
@@ -73,7 +74,7 @@ class Archive:
             meta = {}
         if split_sent:
             assert self.sentence_splitter
-            assert type(data) is not list  # Shouldn't be List[str]
+            assert type(data) is str
             data = self.sentence_splitter.split(data, clean_sent=clean_sent)
 
         if clean_sent and type(data) is str:
@@ -133,10 +134,10 @@ class DatArchive:
 
         self.sentence_splitter = sentence_splitter
 
-    def add_data(self, data: Union[str, List[str]], split_sent: bool = False, clean_sent: bool = False):
+    def add_data(self, data: Union[str, List, dict], split_sent: bool = False, clean_sent: bool = False):
         if split_sent:
             assert self.sentence_splitter
-            assert type(data) is str  # Shouldn't be List[str]
+            assert type(data) is str
             data = self.sentence_splitter.split(data, clean_sent=clean_sent)
 
         self.data.append(data)
@@ -191,7 +192,7 @@ class JSONArchive:
 
         self.sentence_splitter = sentence_splitter
 
-    def add_data(self, data: Union[str, List[str]], split_sent: bool = False, clean_sent: bool = False):
+    def add_data(self, data: Union[str, List, dict], split_sent: bool = False, clean_sent: bool = False):
         if split_sent:
             assert self.sentence_splitter
             assert type(data) is str  # Shouldn't be List[str]
