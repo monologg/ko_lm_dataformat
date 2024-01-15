@@ -1,5 +1,7 @@
 import shutil
 
+import pytest
+
 import ko_lm_dataformat as kldf
 
 from .testing_utils import TMP_DIR_NAME, get_tests_dir, remove_tmp_dir
@@ -26,6 +28,7 @@ def test_kor_str_is_same():
     assert data[0] == text
 
 
+@pytest.mark.skip("Kss install makes error on github actions")
 def test_archive_kss_sent_split():
     remove_tmp_dir()
     archive = kldf.Archive(TMP_DIR_NAME, sentence_splitter=kldf.KssV1SentenceSplitter())
