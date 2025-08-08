@@ -15,7 +15,7 @@ def sha256str(s):
 def test_dat():
     remove_tmp_dir()
     archive = kldf.DatArchive(TMP_DIR_NAME)
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    blns = open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8").read()
     archive.add_data(blns)
     archive.add_data("testing 123")
     archive.add_data(blns)
@@ -36,7 +36,7 @@ def test_dat():
 def test_json():
     remove_tmp_dir()
     archive = kldf.JSONArchive(TMP_DIR_NAME)
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    blns = open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8").read()
     archive.add_data(blns)
     archive.add_data("testing 123")
     archive.add_data(blns)
@@ -57,7 +57,7 @@ def test_json():
 def test_jsonl():
     remove_tmp_dir()
     archive = kldf.Archive(TMP_DIR_NAME)
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    blns = open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8").read()
     archive.add_data(blns)
     archive.add_data("testing 123", meta={"testing": 123})
     archive.add_data(blns, meta={"testing2": 456, "testing": ["a", "b"]})
@@ -91,7 +91,7 @@ def test_naughty_string():
 def test_jsonl_sentences():
     remove_tmp_dir()
     archive = kldf.Archive(TMP_DIR_NAME)
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    blns = open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8").read()
     archive.add_data(blns)
     archive.add_data(["testing 123", "testing 345"], meta={"testing": 123})
     archive.add_data(blns, meta={"testing2": 456, "testing": ["a", "b"]})
@@ -110,7 +110,7 @@ def test_jsonl_sentences():
 
 
 def test_jsonl_tar():
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    blns = open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8").read()
     reader = kldf.Reader(get_tests_dir(append_path="assets/blns.jsonl.zst.tar"))
 
     data = list(reader.stream_data(get_meta=True, autojoin_sentences=True, sent_joiner="\n"))
@@ -128,7 +128,7 @@ def test_jsonl_tar():
 
 def test_txt_read():
     reader = kldf.Reader(get_tests_dir(append_path="assets/blns.txt"))
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    blns = open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8").read()
 
     data = list(reader.stream_data(get_meta=False))
 
@@ -138,7 +138,7 @@ def test_txt_read():
 
 def test_zip_read():
     reader = kldf.Reader(get_tests_dir(append_path="assets/blns.txt.zip"))
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    blns = open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8").read()
 
     data = list(reader.stream_data(get_meta=False))
 
@@ -148,7 +148,7 @@ def test_zip_read():
 
 def test_tgz_read():
     reader = kldf.Reader(get_tests_dir(append_path="assets/blns.txt.tar.gz"))
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    blns = open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8").read()
 
     data = list(reader.stream_data(get_meta=False))
 
