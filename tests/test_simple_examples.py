@@ -67,6 +67,10 @@ def test_jsonl():
     archive.add_data("testing 123456789")
     archive.commit()
 
+    # close the archive's file handles to avoid Windows permission issues
+    archive.compressor.close()
+    archive.fh.close()
+
     reader = kldf.Reader(TMP_DIR_NAME)
 
     data = list(reader.stream_data(get_meta=True))
@@ -85,6 +89,10 @@ def test_naughty_string():
     archive.add_data(naughty_text, clean_sent=True)
     archive.commit()
 
+    # close the archive's file handles to avoid Windows permission issues
+    archive.compressor.close()
+    archive.fh.close()
+
     reader = kldf.Reader(TMP_DIR_NAME)
 
     data = list(reader.stream_data())
@@ -101,6 +109,10 @@ def test_jsonl_sentences():
     archive.add_data(blns, meta={"testing2": 456, "testing": ["a", "b"]})
     archive.add_data("testing 123456789")
     archive.commit()
+
+    # close the archive's file handles to avoid Windows permission issues
+    archive.compressor.close()
+    archive.fh.close()
 
     reader = kldf.Reader(TMP_DIR_NAME)
 
