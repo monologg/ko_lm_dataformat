@@ -14,11 +14,11 @@ def test_kowiki_archive():
     with open(get_tests_dir(append_path="assets/kowiki_sample.txt"), "r", encoding="utf-8") as f:
         for line in f:
             archive.add_data(line.strip())
-    
+
     # close the archive's file handles to avoid Windows permission issues
     archive.compressor.close()
     archive.fh.close()
-    
+
     shutil.rmtree(TMP_DIR_NAME)
 
 
@@ -43,11 +43,11 @@ def test_archive_json_data_is_same():
         orig_data = json.load(f)
     archive.add_data(orig_data)
     archive.commit()
-    
+
     # Close the archive's file handles to avoid Windows permission issues
     archive.compressor.close()
     archive.fh.close()
-    
+
     reader = kldf.Reader(TMP_DIR_NAME)
     kldf_data = list(reader.stream_data())
     assert kldf_data[0] == orig_data
@@ -77,9 +77,9 @@ def test_archive_kss_sent_split():
     with open(get_tests_dir(append_path="assets/kowiki_sample.txt"), "r", encoding="utf-8") as f:
         for line in f:
             archive.add_data(line.strip(), split_sent=True, clean_sent=False)
-    
+
     # Close the archive's file handles to avoid Windows permission issues
     archive.compressor.close()
     archive.fh.close()
-    
+
     shutil.rmtree(TMP_DIR_NAME)
