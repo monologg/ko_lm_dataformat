@@ -22,7 +22,7 @@ set-dev:
 	uv sync --frozen --no-install-project
 
 set-test:
-	uv run --frozen --only-group test pytest --force-sugar --memray tests/
+	uv run --frozen --only-group test pytest --force-sugar tests/
 
 set-style:
 	uv run --frozen --only-group quality ruff check --fix .
