@@ -1,16 +1,8 @@
 import datetime
 import mmap
 import os
-import sys
 from functools import reduce
 from math import ceil
-
-
-# The package importlib_metadata is in a different place, depending on the python version.
-if sys.version_info < (3, 8):
-    pass
-else:
-    pass
 
 
 def listdir_or_file(x):
