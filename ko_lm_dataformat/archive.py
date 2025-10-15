@@ -10,6 +10,7 @@ from .sentence_cleaner import clean_sentence
 from .sentence_splitter import SentenceSplitterBase
 from .utils import get_datetime_timestamp, get_version
 
+
 CURRENT_CHUNK_INCOMPLETE = "current_chunk_incomplete"
 
 

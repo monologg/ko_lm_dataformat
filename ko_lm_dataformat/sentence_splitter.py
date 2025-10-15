@@ -3,7 +3,7 @@ import logging
 from typing import List
 
 from .sentence_cleaner import clean_sentence
-from .utils import importlib_metadata
+
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class KssV1SentenceSplitter(SentenceSplitterBase):
         super().__init__()
         try:
             self.splitter = importlib.import_module("kss")
-            assert importlib_metadata.version("kss") == "1.3.1"
+            assert importlib.metadata.version("kss") == "1.3.1"
         except ImportError:
             logger.warning(
                 "You need to install kss to use KssV1SentenceSplitter!\n"

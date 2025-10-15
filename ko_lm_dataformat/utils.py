@@ -1,15 +1,9 @@
 import datetime
 import mmap
 import os
-import sys
 from functools import reduce
+from importlib.metadata import version
 from math import ceil
-
-# The package importlib_metadata is in a different place, depending on the python version.
-if sys.version_info < (3, 8):
-    import importlib_metadata
-else:
-    import importlib.metadata as importlib_metadata
 
 
 def listdir_or_file(x):
@@ -103,13 +97,12 @@ def handle_jsonl(
             yield text
 
 
-def get_version():
-    version_txt = os.path.join(os.path.dirname(__file__), "version.txt")
-    with open(version_txt) as f:
-        return f.read().strip()
-
-
 def get_datetime_timestamp():
     """Get current datetime timestamp, based on Korea Timezone"""
     KST = datetime.timezone(datetime.timedelta(hours=9))
     return datetime.datetime.now(tz=KST).strftime("%Y%m%d%H%M%S")[2:]
+
+
+def get_version():
+    """Get package version from metadata"""
+    return version("ko_lm_dataformat")
