@@ -17,6 +17,7 @@ jobs:
         uses: astral-sh/setup-uv@v5
         with:
           version: ${{ env.UV_VERSION }}
+          enable-cache: "true"
 
       - name: Set up Python in pyproject.toml
         uses: actions/setup-python@v5

@@ -1,0 +1,120 @@
+name: Github Release & Publish pip
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number (e.g. 0.1.0)"
+        required: true
+      branch:
+        description: "Branch name (e.g. master)"
+        required: true
+        default: "master"
+
+env:
+  TARGET_VERSION: ${{ inputs.version }}
+  TARGET_TAG_NAME: "v${{ inputs.version }}"
+  TARGET_BRANCH_NAME: ${{ inputs.branch }}
+  UV_VERSION: "0.9.2"
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ env.TARGET_BRANCH_NAME }}
+          token: ${{ secrets.CI_GIT_TOKEN }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+
+      - name: Set up Python in pyproject.toml
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Validate version
+        run: |
+          if ! [[ ${{ env.TARGET_VERSION }} =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Version must be in format X.Y.Z (e.g. 0.1.0)"
+            exit 1
+          fi
+
+      - name: Check if release tag already exists
+        run: |
+          echo "⏳ Checking for tag: ${{ env.TARGET_TAG_NAME }}"
+
+          if git rev-parse -q --verify "refs/tags/${{ env.TARGET_TAG_NAME }}" >/dev/null; then
+            echo "::error::Tag '${{ env.TARGET_TAG_NAME }}' already exists. Aborting."
+            exit 1
+          fi
+
+          echo "👍 Tag '${{ env.TARGET_TAG_NAME }}' does not exist. Continue."
+
+      - name: Update version in pyproject.toml and push changes
+        run: |
+          # update package version
+          uvx --from=toml-cli toml set --toml-path=pyproject.toml project.version "${TARGET_VERSION}"
+          uv lock
+
+          # push changes
+          git config --local user.name 'github-actions[bot]'
+          git config --local user.email 'github-actions[bot]@users.noreply.github.com'
+          git add pyproject.toml uv.lock
+          if ! git commit -m "chore: bump version to ${{ env.TARGET_VERSION }}"; then
+            echo "::warning::No changes to commit"
+          fi
+          git push
+
+      - name: Create github release
+        env:
+          GH_TOKEN: ${{ secrets.CI_GIT_TOKEN }}
+        run: |
+          gh release create "${TARGET_TAG_NAME}" --target "${TARGET_BRANCH_NAME}" --generate-notes
+
+  build-and-publish-package:
+    needs: create-release
+    runs-on: ubuntu-latest
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/ko_lm_dataformat
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ env.TARGET_TAG_NAME }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: "true"
+
+      - name: Set up Python in pyproject.toml
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install dependencies
+        run: make setup
+
+      - name: Build package
+        run: uv build
+
+      - name: Check content of wheel
+        run: unzip -l dist/*.whl
+
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          attestations: true
