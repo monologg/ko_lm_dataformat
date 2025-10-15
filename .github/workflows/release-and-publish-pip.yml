@@ -79,7 +79,13 @@ jobs:
 
   build-and-publish-package:
     needs: create-release
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/ko_lm_dataformat
+    permissions:
+      id-token: write  # IMPORTANT: mandatory for trusted publishing
 
     steps:
       - name: Checkout code
@@ -106,3 +112,8 @@ jobs:
 
       - name: Check content of wheel
         run: unzip -l dist/*.whl
+
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          attestations: true
