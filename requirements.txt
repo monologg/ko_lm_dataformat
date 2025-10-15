@@ -1,5 +1,0 @@
-zstandard
-jsonlines
-ujson
-packaging
-importlib_metadata;python_version<"3.8"

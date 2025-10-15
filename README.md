@@ -15,6 +15,8 @@
 
 ## Installation
 
+0.3.1 이후의 버전은 Python 3.9+ 이상을 지원합니다.
+
 ```bash
 pip3 install ko_lm_dataformat
 ```
