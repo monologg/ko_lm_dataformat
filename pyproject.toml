@@ -1,6 +1,6 @@
 [project]
 name = "ko_lm_dataformat"
-version = "0.3.0" # DO NOT EDIT, updated automatically
+version = "0.3.1" # DO NOT EDIT, updated automatically
 description = "A utility for storing and reading files for Korean LM training."
 readme = "README.md"
 license = "MIT"
