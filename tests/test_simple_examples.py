@@ -15,7 +15,8 @@ def sha256str(s):
 def test_dat():
     remove_tmp_dir()
     archive = kldf.DatArchive(TMP_DIR_NAME)
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    with open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8") as f:
+        blns = f.read()
     archive.add_data(blns)
     archive.add_data("testing 123")
     archive.add_data(blns)
@@ -36,7 +37,8 @@ def test_dat():
 def test_json():
     remove_tmp_dir()
     archive = kldf.JSONArchive(TMP_DIR_NAME)
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    with open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8") as f:
+        blns = f.read()
     archive.add_data(blns)
     archive.add_data("testing 123")
     archive.add_data(blns)
@@ -57,12 +59,17 @@ def test_json():
 def test_jsonl():
     remove_tmp_dir()
     archive = kldf.Archive(TMP_DIR_NAME)
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    with open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8") as f:
+        blns = f.read()
     archive.add_data(blns)
     archive.add_data("testing 123", meta={"testing": 123})
     archive.add_data(blns, meta={"testing2": 456, "testing": ["a", "b"]})
     archive.add_data("testing 123456789")
     archive.commit()
+
+    # close the archive's file handles to avoid Windows permission issues
+    archive.compressor.close()
+    archive.fh.close()
 
     reader = kldf.Reader(TMP_DIR_NAME)
 
@@ -82,6 +89,10 @@ def test_naughty_string():
     archive.add_data(naughty_text, clean_sent=True)
     archive.commit()
 
+    # close the archive's file handles to avoid Windows permission issues
+    archive.compressor.close()
+    archive.fh.close()
+
     reader = kldf.Reader(TMP_DIR_NAME)
 
     data = list(reader.stream_data())
@@ -91,12 +102,17 @@ def test_naughty_string():
 def test_jsonl_sentences():
     remove_tmp_dir()
     archive = kldf.Archive(TMP_DIR_NAME)
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    with open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8") as f:
+        blns = f.read()
     archive.add_data(blns)
     archive.add_data(["testing 123", "testing 345"], meta={"testing": 123})
     archive.add_data(blns, meta={"testing2": 456, "testing": ["a", "b"]})
     archive.add_data("testing 123456789")
     archive.commit()
+
+    # close the archive's file handles to avoid Windows permission issues
+    archive.compressor.close()
+    archive.fh.close()
 
     reader = kldf.Reader(TMP_DIR_NAME)
 
@@ -110,7 +126,8 @@ def test_jsonl_sentences():
 
 
 def test_jsonl_tar():
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    with open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8") as f:
+        blns = f.read()
     reader = kldf.Reader(get_tests_dir(append_path="assets/blns.jsonl.zst.tar"))
 
     data = list(reader.stream_data(get_meta=True, autojoin_sentences=True, sent_joiner="\n"))
@@ -128,7 +145,8 @@ def test_jsonl_tar():
 
 def test_txt_read():
     reader = kldf.Reader(get_tests_dir(append_path="assets/blns.txt"))
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    with open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8") as f:
+        blns = f.read()
 
     data = list(reader.stream_data(get_meta=False))
 
@@ -138,7 +156,8 @@ def test_txt_read():
 
 def test_zip_read():
     reader = kldf.Reader(get_tests_dir(append_path="assets/blns.txt.zip"))
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    with open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8") as f:
+        blns = f.read()
 
     data = list(reader.stream_data(get_meta=False))
 
@@ -148,7 +167,8 @@ def test_zip_read():
 
 def test_tgz_read():
     reader = kldf.Reader(get_tests_dir(append_path="assets/blns.txt.tar.gz"))
-    blns = open(get_tests_dir(append_path="assets/blns.txt")).read()
+    with open(get_tests_dir(append_path="assets/blns.txt"), encoding="utf-8") as f:
+        blns = f.read()
 
     data = list(reader.stream_data(get_meta=False))
 
@@ -157,15 +177,16 @@ def test_tgz_read():
 
 
 def test_tarfile_reader():
-    rdr = kldf.tarfile_reader(open(get_tests_dir(append_path="assets/testtarfile.tar"), "rb"), streaming=True)
+    with open(get_tests_dir(append_path="assets/testtarfile.tar"), "rb") as f:
+        rdr = kldf.tarfile_reader(f, streaming=True)
 
-    hashes = map(lambda doc: sha256str(doc.read()), rdr)
+        hashes = map(lambda doc: sha256str(doc.read()), rdr)
 
-    expected = [
-        "782588d891b1a836fcbd0bcd43227f83bf066d90245dd91d061f1b2c0e72fc9d",
-        "dc666c65cd421c688ed8542223c24d9e4a2e5276944f1e7cc296d43a57245498",
-        "c38af4ad8a9b901ea75d7cf60d452a233949f9e88b5fea04f80acde29d513d3e",
-        "fb3ecc0ad0b851dd3e9f0955805530b4946080f6e2a8e6aa0f67ba8209c2f779",
-    ]
+        expected = [
+            "782588d891b1a836fcbd0bcd43227f83bf066d90245dd91d061f1b2c0e72fc9d",
+            "dc666c65cd421c688ed8542223c24d9e4a2e5276944f1e7cc296d43a57245498",
+            "c38af4ad8a9b901ea75d7cf60d452a233949f9e88b5fea04f80acde29d513d3e",
+            "fb3ecc0ad0b851dd3e9f0955805530b4946080f6e2a8e6aa0f67ba8209c2f779",
+        ]
 
-    assert all(map(lambda x: x[0] == x[1], zip(hashes, expected)))
+        assert all(map(lambda x: x[0] == x[1], zip(hashes, expected)))
