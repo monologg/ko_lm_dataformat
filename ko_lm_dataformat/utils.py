@@ -104,12 +104,6 @@ def handle_jsonl(
             yield text
 
 
-def get_version():
-    version_txt = os.path.join(os.path.dirname(__file__), "version.txt")
-    with open(version_txt) as f:
-        return f.read().strip()
-
-
 def get_datetime_timestamp():
     """Get current datetime timestamp, based on Korea Timezone"""
     KST = datetime.timezone(datetime.timedelta(hours=9))
