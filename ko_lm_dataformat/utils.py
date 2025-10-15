@@ -2,6 +2,7 @@ import datetime
 import mmap
 import os
 from functools import reduce
+from importlib.metadata import version
 from math import ceil
 
 
@@ -100,3 +101,8 @@ def get_datetime_timestamp():
     """Get current datetime timestamp, based on Korea Timezone"""
     KST = datetime.timezone(datetime.timedelta(hours=9))
     return datetime.datetime.now(tz=KST).strftime("%Y%m%d%H%M%S")[2:]
+
+
+def get_version():
+    """Get package version from metadata"""
+    return version("ko_lm_dataformat")
