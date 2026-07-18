@@ -20,13 +20,14 @@ env:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ env.TARGET_BRANCH_NAME }}
-          token: ${{ secrets.CI_GIT_TOKEN }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5
@@ -73,7 +74,7 @@ jobs:
 
       - name: Create github release
         env:
-          GH_TOKEN: ${{ secrets.CI_GIT_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${TARGET_TAG_NAME}" --target "${TARGET_BRANCH_NAME}" --generate-notes
 
